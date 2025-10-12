@@ -163,20 +163,24 @@
         }
 
         async function getBotResponse(userMessage) {
-            // =================================================================
-            // IMPORTANT: Replace this URL with the actual URL of your deployed backend
-            // =================================================================
             const backendUrl = 'https://euroleaguechat.onrender.com/chat'; 
 
             showTypingIndicator();
             submitButton.disabled = true;
+
+            // Add AbortController for custom timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000); // 60-second timeout
 
             try {
                 const response = await fetch(backendUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: userMessage }),
+                    signal: controller.signal // Link controller to the fetch request
                 });
+
+                clearTimeout(timeoutId); // Clear the timeout if the request succeeds
 
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
@@ -191,8 +195,16 @@
                 statusText.textContent = 'Online';
 
             } catch (error) {
+                clearTimeout(timeoutId);
                 console.error("Error fetching bot response:", error);
-                addMessage(`Sorry, I'm having trouble connecting. Please try again later. [Error: ${error.message}]`, 'bot');
+
+                if (error.name === 'AbortError') {
+                    // This error is thrown when the 60-second timeout is reached
+                    addMessage("The server is taking a long time to respond, which can happen on the first request as it wakes up. Please try sending your message again in a moment.", 'bot');
+                } else {
+                    addMessage(`Sorry, I'm having trouble connecting. Please try again later. [Error: ${error.message}]`, 'bot');
+                }
+                
                 statusIndicator.classList.remove('bg-green-500');
                 statusIndicator.classList.add('bg-red-500');
                 statusText.textContent = 'Connection Error';
