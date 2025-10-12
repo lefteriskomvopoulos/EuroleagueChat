@@ -10,10 +10,14 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #020617; /* slate-950 */
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.2), transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.2), transparent 40%);
+            /* IMPORTANT: Replace 'YOUR_BACKGROUND_IMAGE_URL_HERE' 
+              with the direct link to the euroleague.jpg image after you upload it.
+              For example: 'https://your-website.com/euroleague.jpg'
+            */
+            background-image: url('https://scontent-lga3-3.xx.fbcdn.net/v/t39.30808-6/515441255_1321355419357988_1730313182967710561_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=wiZnA4PrcusQ7kNvwHgTn25&_nc_oc=Admd_USFqAiy5YhS7-VvZRy3KKKVvrgf_j5bP7Hn2NQjCst-uRPIleRytE-q1fMdO7g&_nc_zt=23&_nc_ht=scontent-lga3-3.xx&_nc_gid=bfC7KiIW6xgfZtU_thapkA&oh=00_AfdKFiJMBH7jbE_wQZa_H9_vv7EI-PSALqZyDp6CU9ylKQ&oe=68F11D98');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
         }
         #chat-container::-webkit-scrollbar {
             width: 6px;
@@ -28,18 +32,22 @@
         #chat-container::-webkit-scrollbar-thumb:hover {
             background: #64748b; /* slate-500 */
         }
+        .bg-overlay {
+            background-color: rgba(2, 6, 23, 0.7); /* slate-950 with 70% opacity */
+        }
     </style>
 </head>
 <body class="text-slate-200 flex items-center justify-center min-h-screen">
 
-    <div class="w-full max-w-2xl mx-auto bg-slate-900/50 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl shadow-blue-500/10 flex flex-col h-[90vh] my-4">
+    <div class="w-full max-w-2xl mx-auto bg-slate-900/50 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl shadow-blue-500/10 flex flex-col h-[90vh] my-4 bg-overlay">
         <!-- Header -->
         <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-transparent rounded-t-2xl">
             <div class="flex items-center space-x-4">
                 <div class="relative w-12 h-12">
                      <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full animate-pulse opacity-75"></div>
                     <div class="relative bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center w-12 h-12">
-                       <i data-lucide="basketball" class="text-blue-400"></i>
+                       <!-- New Assistant Avatar Image -->
+                       <img src="https://robohash.org/euroleague-ai.png?size=48x48&set=set4&bgset=bg1" alt="AI Avatar" class="rounded-full w-10 h-10">
                     </div>
                 </div>
                 <div>
@@ -55,8 +63,8 @@
         <!-- Chat Messages -->
         <div id="chat-container" class="flex-1 p-6 overflow-y-auto space-y-6">
             <div class="flex items-start gap-3">
-                <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="basketball" class="text-slate-400 w-5 h-5"></i>
+                <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0 p-1">
+                     <img src="https://robohash.org/euroleague-ai.png?size=40x40&set=set4&bgset=bg1" alt="AI Avatar" class="rounded-full">
                 </div>
                 <div class="bg-slate-800 p-4 rounded-lg rounded-tl-none max-w-lg">
                     <p class="text-slate-200">
@@ -70,8 +78,8 @@
         <!-- Typing Indicator -->
         <div id="typing-indicator" class="px-6 pb-2 hidden">
             <div class="flex items-start gap-3">
-                <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="basketball" class="text-slate-400 w-5 h-5"></i>
+                <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0 p-1">
+                     <img src="https://robohash.org/euroleague-ai.png?size=40x40&set=set4&bgset=bg1" alt="AI Avatar" class="rounded-full">
                 </div>
                 <div class="bg-slate-800 p-4 rounded-lg rounded-tl-none">
                     <div class="flex items-center justify-center space-x-1">
@@ -107,6 +115,9 @@
         const statusIndicator = document.getElementById('status-indicator');
         const statusText = document.getElementById('status-text');
 
+        // URL for the new assistant avatar
+        const assistantAvatarUrl = 'https://img.favpng.com/2/2/14/3d-male-avatar-3d-glasses-wearing-cartoon-character-y66ZMATL.jpg';
+
         chatForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const message = messageInput.value.trim();
@@ -135,8 +146,8 @@
                     </div>`;
             } else {
                 messageHTML = `
-                    <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i data-lucide="basketball" class="w-5 h-5 text-slate-400"></i>
+                    <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0 p-1">
+                        <img src="${assistantAvatarUrl}" alt="AI Avatar" class="rounded-full">
                     </div>
                     <div class="bg-slate-800 p-4 rounded-lg rounded-tl-none max-w-lg shadow-md">
                         <p class="text-slate-200">${message}</p>
@@ -163,24 +174,23 @@
         }
 
         async function getBotResponse(userMessage) {
-            const backendUrl = 'https://euroleaguechat.onrender.com/chat'; 
+            const backendUrl = 'https://my-chatbot-backend.onrender.com/chat'; 
 
             showTypingIndicator();
             submitButton.disabled = true;
 
-            // Add AbortController for custom timeout
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 60000); // 60-second timeout
+            const timeoutId = setTimeout(() => controller.abort(), 60000); 
 
             try {
                 const response = await fetch(backendUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: userMessage }),
-                    signal: controller.signal // Link controller to the fetch request
+                    signal: controller.signal
                 });
 
-                clearTimeout(timeoutId); // Clear the timeout if the request succeeds
+                clearTimeout(timeoutId);
 
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
@@ -199,7 +209,6 @@
                 console.error("Error fetching bot response:", error);
 
                 if (error.name === 'AbortError') {
-                    // This error is thrown when the 60-second timeout is reached
                     addMessage("The server is taking a long time to respond, which can happen on the first request as it wakes up. Please try sending your message again in a moment.", 'bot');
                 } else {
                     addMessage(`Sorry, I'm having trouble connecting. Please try again later. [Error: ${error.message}]`, 'bot');
@@ -217,3 +226,4 @@
     </script>
 </body>
 </html>
+
