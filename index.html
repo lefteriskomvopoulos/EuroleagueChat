@@ -3,44 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat Assistant</title>
+    <title>EuroLeague AI Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #020617; /* slate-950 */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.2), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.2), transparent 40%);
         }
         #chat-container::-webkit-scrollbar {
             width: 6px;
         }
         #chat-container::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: rgba(30, 41, 59, 0.5); /* slate-800 */
         }
         #chat-container::-webkit-scrollbar-thumb {
-            background: #94a3b8;
+            background: #475569; /* slate-600 */
             border-radius: 3px;
         }
         #chat-container::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
+            background: #64748b; /* slate-500 */
         }
     </style>
 </head>
-<body class="bg-slate-100 flex items-center justify-center min-h-screen">
+<body class="text-slate-200 flex items-center justify-center min-h-screen">
 
-    <div class="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl flex flex-col h-[90vh] my-4">
+    <div class="w-full max-w-2xl mx-auto bg-slate-900/50 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl shadow-blue-500/10 flex flex-col h-[90vh] my-4">
         <!-- Header -->
-        <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-2xl">
-            <div class="flex items-center space-x-3">
-                <div class="relative w-10 h-10">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-blue-400 rounded-full animate-pulse"></div>
-                    <div class="absolute inset-1 bg-white rounded-full flex items-center justify-center">
-                       <i data-lucide="bot" class="text-indigo-600"></i>
+        <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-transparent rounded-t-2xl">
+            <div class="flex items-center space-x-4">
+                <div class="relative w-12 h-12">
+                     <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full animate-pulse opacity-75"></div>
+                    <div class="relative bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center w-12 h-12">
+                       <i data-lucide="basketball" class="text-blue-400"></i>
                     </div>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold text-slate-800">AI Chat Assistant</h1>
-                    <p class="text-sm text-slate-500 flex items-center">
+                    <h1 class="text-xl font-bold text-slate-100">EuroLeague AI Assistant</h1>
+                    <p class="text-sm text-slate-400 flex items-center">
                         <span id="status-indicator" class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                         <span id="status-text">Online</span>
                     </p>
@@ -51,14 +55,14 @@
         <!-- Chat Messages -->
         <div id="chat-container" class="flex-1 p-6 overflow-y-auto space-y-6">
             <div class="flex items-start gap-3">
-                <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="bot" class="text-slate-600"></i>
+                <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="basketball" class="text-slate-400 w-5 h-5"></i>
                 </div>
-                <div class="bg-slate-100 p-4 rounded-lg rounded-tl-none max-w-lg">
-                    <p class="text-slate-700">
-                        Hello! I'm your AI assistant, now connected to a live backend. How can I help you today?
+                <div class="bg-slate-800 p-4 rounded-lg rounded-tl-none max-w-lg">
+                    <p class="text-slate-200">
+                        Hello! Welcome to the EuroLeague AI assistant. How can I help you today?
                     </p>
-                    <p class="text-xs text-slate-400 mt-2 text-right">Just now</p>
+                    <p class="text-xs text-slate-500 mt-2 text-right">Just now</p>
                 </div>
             </div>
         </div>
@@ -66,26 +70,26 @@
         <!-- Typing Indicator -->
         <div id="typing-indicator" class="px-6 pb-2 hidden">
             <div class="flex items-start gap-3">
-                <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i data-lucide="bot" class="text-slate-600"></i>
+                <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="basketball" class="text-slate-400 w-5 h-5"></i>
                 </div>
-                <div class="bg-slate-100 p-4 rounded-lg rounded-tl-none">
+                <div class="bg-slate-800 p-4 rounded-lg rounded-tl-none">
                     <div class="flex items-center justify-center space-x-1">
-                        <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: -0.3s;"></span>
-                        <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: -0.15s;"></span>
-                        <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
+                        <span class="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style="animation-delay: -0.3s;"></span>
+                        <span class="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style="animation-delay: -0.15s;"></span>
+                        <span class="w-2 h-2 bg-slate-500 rounded-full animate-bounce"></span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Input Form -->
-        <div class="p-4 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
+        <div class="p-4 border-t border-slate-700 bg-slate-900/50 rounded-b-2xl">
             <form id="chat-form" class="flex items-center space-x-3">
                 <input type="text" id="message-input" placeholder="Type your message..."
-                    class="flex-1 w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    class="flex-1 w-full px-4 py-3 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-slate-800 text-slate-100 placeholder-slate-400"
                     autocomplete="off">
-                <button type="submit" id="submit-button" class="bg-indigo-600 text-white p-3 rounded-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform active:scale-95">
+                <button type="submit" id="submit-button" class="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-slate-900 transition-transform transform active:scale-95">
                     <i data-lucide="send-horizontal" class="w-6 h-6"></i>
                 </button>
             </form>
@@ -106,7 +110,7 @@
         chatForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const message = messageInput.value.trim();
-            if (message) {
+            if (message && !submitButton.disabled) {
                 addMessage(message, 'user');
                 messageInput.value = '';
                 getBotResponse(message);
@@ -131,12 +135,12 @@
                     </div>`;
             } else {
                 messageHTML = `
-                    <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i data-lucide="bot" class="w-5 h-5 text-slate-600"></i>
+                    <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="basketball" class="w-5 h-5 text-slate-400"></i>
                     </div>
-                    <div class="bg-slate-100 p-4 rounded-lg rounded-tl-none max-w-lg shadow-md">
-                        <p class="text-slate-700">${message}</p>
-                        <p class="text-xs text-slate-400 mt-2 text-right">${time}</p>
+                    <div class="bg-slate-800 p-4 rounded-lg rounded-tl-none max-w-lg shadow-md">
+                        <p class="text-slate-200">${message}</p>
+                        <p class="text-xs text-slate-500 mt-2 text-right">${time}</p>
                     </div>`;
             }
             messageWrapper.innerHTML = messageHTML;
