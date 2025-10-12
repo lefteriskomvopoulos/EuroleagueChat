@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
     <title>EuroLeague AI Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,6 +18,7 @@
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
+            overflow: hidden; /* Prevent scrollbars from appearing when dragging */
         }
         #chat-container::-webkit-scrollbar {
             width: 6px;
@@ -37,21 +38,21 @@
         }
     </style>
 </head>
-<body class="text-slate-200 flex items-center justify-center min-h-screen">
+<body class="text-slate-200 min-h-screen">
 
-    <div class="w-full max-w-2xl mx-auto bg-slate-900/50 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl shadow-blue-500/10 flex flex-col h-[90vh] my-4 bg-overlay">
-        <!-- Header -->
-        <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-transparent rounded-t-2xl">
+    <div id="chat-window" class="w-full max-w-2xl bg-slate-900/50 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl shadow-blue-500/10 flex flex-col h-[90vh] bg-overlay absolute select-none">
+        <!-- Header (Drag Handle) -->
+        <div id="chat-header" class="p-4 border-b border-slate-700 flex justify-between items-center bg-transparent rounded-t-2xl cursor-move">
             <div class="flex items-center space-x-4">
                 <div class="relative w-12 h-12">
                      <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full animate-pulse opacity-75"></div>
                     <div class="relative bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center w-12 h-12">
                        <!-- New Assistant Avatar Image -->
-                       <img src="https://robohash.org/euroleague-ai.png?size=48x48&set=set4&bgset=bg1" alt="AI Avatar" class="rounded-full w-10 h-10">
+                       <img src="https://img.favpng.com/2/2/14/3d-male-avatar-3d-glasses-wearing-cartoon-character-y66ZMATL.jpg" alt="AI Avatar" class="rounded-full w-10 h-10">
                     </div>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold text-slate-100">EuroLeague AI Assistant</h1>
+                    <h1 class="text-xl font-bold text-slate-100">EuroLeague Scouter</h1>
                     <p class="text-sm text-slate-400 flex items-center">
                         <span id="status-indicator" class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                         <span id="status-text">Online</span>
@@ -64,11 +65,11 @@
         <div id="chat-container" class="flex-1 p-6 overflow-y-auto space-y-6">
             <div class="flex items-start gap-3">
                 <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0 p-1">
-                     <img src="https://robohash.org/euroleague-ai.png?size=40x40&set=set4&bgset=bg1" alt="AI Avatar" class="rounded-full">
+                     <img src="https://img.favpng.com/2/2/14/3d-male-avatar-3d-glasses-wearing-cartoon-character-y66ZMATL.jpg" alt="AI Avatar" class="rounded-full">
                 </div>
                 <div class="bg-slate-800 p-4 rounded-lg rounded-tl-none max-w-lg">
                     <p class="text-slate-200">
-                        Hello! Welcome to the EuroLeague AI assistant. How can I help you today?
+                        Hello mate !! I am the Euroleague Scouter. How can I help you today ?
                     </p>
                     <p class="text-xs text-slate-500 mt-2 text-right">Just now</p>
                 </div>
@@ -79,7 +80,7 @@
         <div id="typing-indicator" class="px-6 pb-2 hidden">
             <div class="flex items-start gap-3">
                 <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0 p-1">
-                     <img src="https://robohash.org/euroleague-ai.png?size=40x40&set=set4&bgset=bg1" alt="AI Avatar" class="rounded-full">
+                     <img src="https://img.favpng.com/2/2/14/3d-male-avatar-3d-glasses-wearing-cartoon-character-y66ZMATL.jpg" alt="AI Avatar" class="rounded-full">
                 </div>
                 <div class="bg-slate-800 p-4 rounded-lg rounded-tl-none">
                     <div class="flex items-center justify-center space-x-1">
@@ -223,7 +224,56 @@
                 messageInput.focus();
             }
         }
+
+        // --- NEW DRAGGABLE WINDOW SCRIPT ---
+        const chatWindow = document.getElementById('chat-window');
+        const chatHeader = document.getElementById('chat-header');
+
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        // Center the window initially and on resize
+        function centerWindow() {
+            const y = (window.innerHeight - chatWindow.offsetHeight) / 2;
+            const x = (window.innerWidth - chatWindow.offsetWidth) / 2;
+            chatWindow.style.top = y > 0 ? `${y}px` : '0px';
+            chatWindow.style.left = x > 0 ? `${x}px` : '0px';
+        }
+
+        window.addEventListener('load', centerWindow);
+        window.addEventListener('resize', centerWindow);
+
+        chatHeader.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - chatWindow.offsetLeft;
+            offsetY = e.clientY - chatWindow.offsetTop;
+            document.body.style.userSelect = 'none'; // Prevent text selection
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+
+            let newX = e.clientX - offsetX;
+            let newY = e.clientY - offsetY;
+            
+            // Boundary checks to keep the window within the viewport
+            const minX = 0;
+            const minY = 0;
+            const maxX = window.innerWidth - chatWindow.offsetWidth;
+            const maxY = window.innerHeight - chatWindow.offsetHeight;
+
+            newX = Math.max(minX, Math.min(newX, maxX));
+            newY = Math.max(minY, Math.min(newY, maxY));
+
+            chatWindow.style.left = `${newX}px`;
+            chatWindow.style.top = `${newY}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            document.body.style.userSelect = 'auto'; // Re-enable text selection
+        });
     </script>
 </body>
 </html>
-
