@@ -45,10 +45,9 @@
         <div id="chat-header" class="p-4 border-b border-slate-700 flex justify-between items-center bg-transparent rounded-t-2xl cursor-move">
             <div class="flex items-center space-x-4">
                 <div class="relative w-12 h-12">
-                     <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full animate-pulse opacity-75"></div>
-                    <div class="relative bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center w-12 h-12">
-                       <!-- New Assistant Avatar Image -->
-                       <img src="https://img.favpng.com/2/2/14/3d-male-avatar-3d-glasses-wearing-cartoon-character-y66ZMATL.jpg" alt="AI Avatar" class="rounded-full w-10 h-10">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full animate-pulse opacity-75"></div>
+                    <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0 p-1">
+                        <img src="https://img.favpng.com/2/2/14/3d-male-avatar-3d-glasses-wearing-cartoon-character-y66ZMATL.jpg" alt="AI Avatar" class="rounded-full">
                     </div>
                 </div>
                 <div>
@@ -175,7 +174,7 @@
         }
 
         async function getBotResponse(userMessage) {
-            const backendUrl = 'https://my-chatbot-backend.onrender.com/chat'; 
+            const backendUrl = 'https://euroleaguechat.onrender.com/chat'; 
 
             showTypingIndicator();
             submitButton.disabled = true;
