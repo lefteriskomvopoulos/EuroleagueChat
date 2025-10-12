@@ -145,7 +145,7 @@ def matching(graph, question, client):
 
     return response.choices[0].message.content
 
-if __name__ == '__main__':
+def questioning(question):
 
     QA_PROMPT_TEMPLATE = """
     You are a helpful AI assistant tasked with answering questions based on data from a graph database.
@@ -187,10 +187,10 @@ if __name__ == '__main__':
         qa_chain=qa_chain,
         verbose=True,
         allow_dangerous_requests=True,
-        # temperature=0.0
     )
 
-    cypher_query = cypher_query77
-    print(f"\nRunning Cypher QA chain with query: '{matching(graph, cypher_query, client)}'")
-    result = cypher_chain.invoke({"query": matching(graph, cypher_query, client)})
+    print(f"\nRunning Cypher QA chain with query: '{matching(graph, question, client)}'")
+    result = cypher_chain.invoke({"query": matching(graph, question, client)})
     print(f"Cypher QA Chain Result: {result['result']}")
+
+    return result

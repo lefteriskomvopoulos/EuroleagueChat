@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+from main import questioning
+
 # 1. Initialize Flask App and CORS
 app = Flask(__name__)
 # This allows your frontend to make requests to this backend
@@ -20,7 +22,7 @@ def get_chatbot_response(user_message):
     print(f"Received message: {user_message}")
     # --- YOUR CHATBOT LOGIC GOES HERE ---
     # Example: response = my_chatbot.get_reply(user_message)
-    response = f"This is my reply to: '{user_message}'"
+    response = f"This is my reply to: '{questioning(user_message)}'"
     # ------------------------------------
     return response
 
