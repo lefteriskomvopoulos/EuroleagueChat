@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for a cleaner look */
+        #chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        #chat-container::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 3px;
+        }
+        #chat-container::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl flex flex-col h-[90vh] my-4">
+        <!-- Header -->
+        <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-2xl">
+            <div class="flex items-center space-x-3">
+                <div class="relative w-10 h-10">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-blue-400 rounded-full animate-pulse"></div>
+                    <div class="absolute inset-1 bg-white rounded-full flex items-center justify-center">
+                       <i data-lucide="bot" class="text-indigo-600"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800">AI Chat Assistant</h1>
+                    <p class="text-sm text-slate-500 flex items-center">
+                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                        Online
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-container" class="flex-1 p-6 overflow-y-auto space-y-6">
+            <!-- Bot Welcome Message -->
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="bot" class="text-slate-600"></i>
+                </div>
+                <div class="bg-slate-100 p-4 rounded-lg rounded-tl-none max-w-lg">
+                    <p class="text-slate-700">
+                        Hello! I'm your AI assistant. How can I help you today?
+                    </p>
+                    <p class="text-xs text-slate-400 mt-2 text-right">Just now</p>
+                </div>
+            </div>
+
+            <!-- Example User Message -->
+            <!--
+            <div class="flex items-start gap-3 justify-end">
+                <div class="bg-indigo-600 text-white p-4 rounded-lg rounded-tr-none max-w-lg">
+                    <p>
+                        This is an example of a user message.
+                    </p>
+                    <p class="text-xs text-indigo-200 mt-2 text-right">10:39 PM</p>
+                </div>
+                <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 text-white">
+                    <i data-lucide="user"></i>
+                </div>
+            </div>
+            -->
+
+        </div>
+
+        <!-- Typing Indicator -->
+        <div id="typing-indicator" class="px-6 pb-2 hidden">
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="bot" class="text-slate-600"></i>
+                </div>
+                <div class="bg-slate-100 p-4 rounded-lg rounded-tl-none">
+                    <div class="flex items-center justify-center space-x-1">
+                        <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: -0.3s;"></span>
+                        <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: -0.15s;"></span>
+                        <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Input Form -->
+        <div class="p-4 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
+            <form id="chat-form" class="flex items-center space-x-3">
+                <input type="text" id="message-input" placeholder="Type your message..."
+                    class="flex-1 w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    autocomplete="off">
+                <button type="submit" class="bg-indigo-600 text-white p-3 rounded-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform active:scale-95">
+                    <i data-lucide="send-horizontal" class="w-6 h-6"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        // --- Event Listener for Form Submission ---
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (message) {
+                // 1. Add user's message to the UI
+                addMessage(message, 'user');
+                messageInput.value = '';
+
+                // 2. Show typing indicator and get bot's response
+                showTypingIndicator();
+                getBotResponse(message);
+            }
+        });
+
+        // --- Function to Add a Message to the Chat Window ---
+        function addMessage(message, sender) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `flex items-start gap-3 ${sender === 'user' ? 'justify-end' : ''}`;
+            
+            const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            let messageHTML = '';
+            if (sender === 'user') {
+                messageHTML = `
+                    <div class="bg-indigo-600 text-white p-4 rounded-lg rounded-tr-none max-w-lg shadow-md">
+                        <p>${message}</p>
+                        <p class="text-xs text-indigo-200 mt-2 text-right">${time}</p>
+                    </div>
+                    <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 text-white">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </div>
+                `;
+            } else {
+                messageHTML = `
+                    <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="bot" class="w-5 h-5 text-slate-600"></i>
+                    </div>
+                    <div class="bg-slate-100 p-4 rounded-lg rounded-tl-none max-w-lg shadow-md">
+                        <p class="text-slate-700">${message}</p>
+                        <p class="text-xs text-slate-400 mt-2 text-right">${time}</p>
+                    </div>
+                `;
+            }
+
+            messageWrapper.innerHTML = messageHTML;
+            chatContainer.appendChild(messageWrapper);
+            lucide.createIcons(); // Re-render icons for new messages
+            scrollToBottom();
+        }
+
+        // --- Function to show/hide typing indicator ---
+        function showTypingIndicator() {
+            typingIndicator.classList.remove('hidden');
+            scrollToBottom();
+        }
+
+        function hideTypingIndicator() {
+            typingIndicator.classList.add('hidden');
+        }
+
+        // --- Function to Automatically Scroll to the Bottom ---
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // --- Function to Get Bot's Response ---
+        // This is where you'll connect to your Python backend.
+        async function getBotResponse(userMessage) {
+            // =================================================================
+            // TODO: REPLACE THIS MOCKUP WITH YOUR ACTUAL API CALL
+            // =================================================================
+
+            // Example using fetch to call a local Flask/FastAPI server:
+            /*
+            try {
+                const response = await fetch('http://127.0.0.1:5000/chat', { // Your backend URL
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: userMessage }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const botReply = data.reply; // Adjust based on your API response structure
+
+                // Hide typing indicator and add the actual bot message
+                hideTypingIndicator();
+                addMessage(botReply, 'bot');
+
+            } catch (error) {
+                console.error("Error fetching bot response:", error);
+                hideTypingIndicator();
+                addMessage("Sorry, I'm having trouble connecting. Please try again later.", 'bot');
+            }
+            */
+
+            // --- Mockup Response (for demonstration) ---
+            // This simulates a delay as if we were calling a real backend.
+            // Replace this setTimeout with the `fetch` call above.
+            setTimeout(() => {
+                const responses = [
+                    "That's a great question! Let me think...",
+                    "Interesting point. I'll need a moment to process that.",
+                    "I see. How about we explore this further?",
+                    "Thank you for sharing. Here's what I found:",
+                    "Processing your request... please wait."
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                
+                hideTypingIndicator();
+                addMessage(randomResponse, 'bot');
+            }, 1500 + Math.random() * 1000); // Simulate network delay
+            // --- End of Mockup ---
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+python-dotenv
+openai
+langchain-community
+langchain-core
+langchain-openai
+faiss-cpu
+requests
+beautifulsoup4
+pandas
+euroleague-api
+neo4j
+langchain-neo4j
