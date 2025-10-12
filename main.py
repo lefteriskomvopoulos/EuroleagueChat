@@ -193,4 +193,4 @@ def questioning(question):
     result = cypher_chain.invoke({"query": matching(graph, question, client)})
     print(f"Cypher QA Chain Result: {result['result']}")
 
-    return result
+    return result['result']
