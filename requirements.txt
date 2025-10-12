@@ -10,3 +10,6 @@ pandas
 euroleague-api
 neo4j
 langchain-neo4j
+flask
+flask-Cors
+gunicorn
