@@ -27,32 +27,24 @@ client = OpenAI(
         organization=org
 )
 
-load_status = dotenv.load_dotenv("Neo4j-86d870c3-Created-2025-10-09.txt")
-if load_status is False:
-    raise RuntimeError('Environment variables not loaded.')
+# load_status = dotenv.load_dotenv("Neo4j-86d870c3-Created-2025-10-09.txt")
+# if load_status is False:
+#     raise RuntimeError('Environment variables not loaded.')
 
-URI = os.getenv("NEO4J_URI")
-AUTH = (os.getenv("NEO4J_USERNAME"), os.getenv("NEO4J_PASSWORD"))
+NEO4J_DATABASE = os.getenv("NEO4J_DATABASE")
+NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
+NEO4J_URI = os.getenv("NEO4J_URI")
 
-graph = Neo4jGraph()
+graph = Neo4jGraph(
+    url=NEO4J_URI,
+    username=NEO4J_USERNAME,
+    password=NEO4J_PASSWORD,
+    database=NEO4J_DATABASE
+)
+
 graph.refresh_schema()
 llm = ChatOpenAI(model_name="gpt-5")
-
-metrics = {'naive'      : 'average_performance',
-           'classic'    : 'average_performance / credit',
-           'weighted'   : 'last_performance * 0.5 / credit + average_performance * 0.5 / credit',
-           'momentum'   : 'last_performance'}
-cypher_query11 = "Which players play in Panathnaikos ?"
-cypher_query1 = "In which team does Calinic play?"
-cypher_query2 = "What is the average performance of Round 2 ?"
-cypher_query3 = "What are the average playing minutes for those players who had more than 20 performance in round 1?"
-cypher_query4 = "What is the average performance of players in Barcelona?"
-cypher_query44 = "What is the average performance of Vezenkov?"
-cypher_query5 = "How much credits does Walkup cost ?"
-cypher_query55 = "How much credits do all the players of Olympiacos cost ?"
-cypher_query6 = "Provide the best five players based on this metric : " + str(metrics['weighted'])
-cypher_query7 = "Given you have 100 available credits to spend, choose the best set of 10 players based on this metric : " + str(metrics['classic'])
-cypher_query77 = "Given you have 100 available credits to spend, choose the best set of 10 players based on this metric : " + str(metrics['naive'])
 
 def create_web_rag_chain(url: str, model_name: str = None):
     print(f"Loading content ...")
@@ -168,7 +160,13 @@ def questioning(question):
 
     CYPHER_GENERATION_TEMPLATE = CYPHER_GENERATION_PROMPT.template +"""
     IMPORTANT:
-    - You must generate only a single, valid Cypher query for the question. Do not generate multiple queries.
+    -   You must generate only a single, valid Cypher query for the question. Do not generate multiple queries.
+    -   In case you are requested to choose/select/recommend a team of players provided some credits, based on a metric, then try to mazimize that metric by taking advantage as more credits as possible.
+        For example, imagine you have 20 credits and you have to recommend a team of three players, maximizing the total performance. Then :
+        Team1: [Player1: 6 credits and 15 performance, [Player2: 6 credits and 14 performance, [Player3: 7 credits and 13 performance] is better than :
+        Team2: [Player1: 9 credits and 20 performance, [Player2: 10 credits and 21 performance]
+        since total_performance(Team1) = 42 and total_performance(Team2) = 41, even if Team2 includes better players.
+        In other words, the best team does not necessarily includes the best players, but actually maximizes the metric without exceeding the credits.
     """
 
     CYPHER_PROMPT = PromptTemplate(

@@ -173,13 +173,13 @@
         }
 
         async function getBotResponse(userMessage) {
-            const backendUrl = 'https://euroleaguechat.onrender.com/chat'; 
+            const backendUrl = 'http://127.0.0.1:5000/chat'; 
 
             showTypingIndicator();
             submitButton.disabled = true;
 
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 60000); 
+            const timeoutId = setTimeout(() => controller.abort(), 300000); 
 
             try {
                 const response = await fetch(backendUrl, {
