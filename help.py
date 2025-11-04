@@ -44,3 +44,51 @@
 
     # print("\n--- Answer ---")
     # print(answer)
+
+    ######################################
+    #####  RAG Example with Webpage  #####
+    ######################################
+    # def create_web_rag_chain(url: str, model_name: str = None):
+    #     print(f"Loading content ...")
+    #     loader = WebBaseLoader(url)
+    #     docs = loader.load()
+    #     print("Content loaded successfully.")
+
+    #     text_splitter = RecursiveCharacterTextSplitter()
+    #     documents = text_splitter.split_documents(docs)
+
+    #     embeddings = OpenAIEmbeddings()
+    #     print("Creating vector store...")
+    #     vector_store = FAISS.from_documents(documents, embeddings)
+    #     print("Vector store created.")
+
+    #     llm = ChatOpenAI(model_name=model_name, temperature=1)
+
+    #     prompt = ChatPromptTemplate.from_template(
+    #             """ This context includes stats about all the active players of Euroleague.
+    #                 Each column represents a different statistical category. For example, column 'PTS' comes for points, while FTM comes for Free Throws Made.
+    #                 Each column has an average (not a cumulative) value. 
+                    
+    #                 Answer the following question based only on the provided context:
+
+    #                 {context}
+
+    #                 Question: {question}
+                    
+    #                 Always justify your answer with the data included in the context. If you can't find the answer, say it clearly.
+    #                 Never make up an answer. If the question is not related to the context, politely respond that you are only able to answer questions that are related to the context."""
+    #     )
+
+    #     retriever = vector_store.as_retriever()
+        
+    #     qa = RetrievalQA.from_chain_type(
+    #         llm=llm,
+    #         chain_type="stuff",
+    #         retriever=retriever,
+    #         chain_type_kwargs={"prompt": prompt},
+    #         input_key="question",
+    #         output_key="answer",
+    #     )
+
+    #     print("RAG chain ready!")
+    #     return qa

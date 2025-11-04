@@ -7,7 +7,6 @@ ROUND = 3
 def weekly_stats(week):
     url = "https://www.dunkest.com/api/stats/table"
 
-    # Define the query parameters as a dictionary
     params = {
         "season_id": 23,
         "mode": "dunkest",
@@ -24,7 +23,6 @@ def weekly_stats(week):
         "iframe": "yes"
     }
     
-    # Define the headers for the request
     headers = {
         "accept": "application/json, text/javascript, */*; q=0.01",
         "accept-encoding": "gzip, deflate, br, zstd",
@@ -33,14 +31,10 @@ def weekly_stats(week):
         "x-requested-with": "XMLHttpRequest"
     }
     
-    # Make the GET request
     response = requests.get(url, params=params, headers=headers)
     
-    # Check the response status
     if response.status_code == 200:
-        # print("Request was successful!")
-        data = response.json()  # Parse the JSON response
-        # print(data)  # Print or handle the data as needed
+        data = response.json()
     else:
         print(f"Request failed with status code {response.status_code}")
 
@@ -48,17 +42,53 @@ def weekly_stats(week):
 
     return df
 
-weekly_df = pd.DataFrame()
-for round in range(1, ROUND + 1):
-    tmp = weekly_stats(round)
-    tmp['week'] = round
-    weekly_df = pd.concat([weekly_df,tmp])
-
-weekly_df['pdk'] = weekly_df['pdk'].astype(float)
-weekly_df['cr'] = weekly_df['cr'].astype(float)
-weekly_df.sort_values(['id', 'week'], inplace = True)
-
-fantasy_stats = {}
-for player_first_name, player_last_name, team, cr, week in zip(weekly_df['first_name'], weekly_df['last_name'], weekly_df['team_name'], weekly_df['cr'], weekly_df['week']):
-    fantasy_stats[str(player_last_name).upper() + ", " + str(player_first_name).upper()] = cr
-
+teams_ids = []
+teams = []
+players_ids = []
+players = []
+playersToTeams = []
+stats = []
+playersToStats = []
+stat_id = 1
+for round in range(1, 9):
+    round_stats = weekly_stats(round)
+    for index, row in round_stats.iterrows():
+        if row['team_id'] not in teams_ids:
+            teams_ids.append(row['team_id'])
+            teams.append({'team_id': row['team_id'], 'team_name': row['team_name'], 'team_code': row['team_code']})
+        playerToTeam = {'player_id': row['id'], 'team_id': row['team_id']}
+        if row['id'] not in players_ids:
+            players_ids.append(row['id'])
+            players.append({'player_id': row['id'],
+                            'player_name': row['first_name'] + " " + row['last_name'],
+                            'position': row['position'],
+                            'team_id': row['team_id']
+            })
+            playersToTeams.append(playerToTeam)  
+        stats.append(   {'stat_id': stat_id,
+                        'round': round,
+                        'credits': float(row['cr']),
+                        'fantasy_points': float(row['pdk']),
+                        'plus/minus': float(row['plus_minus']),
+                        'minutes': float(row['min']),
+                        'starter': float(row['starter']),
+                        'points' : float(row['pts']),
+                        'assists': float(row['ast']),
+                        'rebounds': float(row['reb']),
+                        'offensive_rebounds': float(row['oreb']),
+                        'defensive_rebounds': float(row['dreb']),
+                        'steals': float(row['stl']),
+                        'blocks': float(row['blk']),
+                        'blocks_against': float(row['blka']),
+                        'field_goals_made': float(row['fgm']),
+                        'field_goals_attempted': float(row['fga']),
+                        'three_points_made': float(row['tpm']),
+                        'three_points_attempted': float(row['tpa']),
+                        'free_throws_made': float(row['ftm']),
+                        'free_throws_attempted': float(row['fta']),
+                        'personal_fouls': float(row['pf']),
+                        'fouls_received': float(row['fouls_received']),
+                        'turnovers': float(row['tov'])
+                        })
+        playersToStats.append({'player_id': row['id'], 'stat_id': stat_id})
+        stat_id += 1

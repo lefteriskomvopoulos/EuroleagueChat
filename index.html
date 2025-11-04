@@ -10,11 +10,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            /* IMPORTANT: Replace 'YOUR_BACKGROUND_IMAGE_URL_HERE' 
-              with the direct link to the euroleague.jpg image after you upload it.
-              For example: 'https://your-website.com/euroleague.jpg'
-            */
-            background-image: url('https://scontent-lga3-3.xx.fbcdn.net/v/t39.30808-6/515441255_1321355419357988_1730313182967710561_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=wiZnA4PrcusQ7kNvwHgTn25&_nc_oc=Admd_USFqAiy5YhS7-VvZRy3KKKVvrgf_j5bP7Hn2NQjCst-uRPIleRytE-q1fMdO7g&_nc_zt=23&_nc_ht=scontent-lga3-3.xx&_nc_gid=bfC7KiIW6xgfZtU_thapkA&oh=00_AfdKFiJMBH7jbE_wQZa_H9_vv7EI-PSALqZyDp6CU9ylKQ&oe=68F11D98');
+            background-image: url('/assets/background-image-1.jpg');
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
@@ -33,13 +29,12 @@
         #chat-container::-webkit-scrollbar-thumb:hover {
             background: #64748b; /* slate-500 */
         }
-        .bg-overlay {
-            background-color: rgba(2, 6, 23, 0.7); /* slate-950 with 70% opacity */
+        #chat-window {
+            background-color: rgba(2, 6, 23, 0.1) !important; 
         }
     </style>
 </head>
 <body class="text-slate-200 min-h-screen">
-
     <div id="chat-window" class="w-full max-w-2xl bg-slate-900/50 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl shadow-blue-500/10 flex flex-col h-[90vh] bg-overlay absolute select-none">
         <!-- Header (Drag Handle) -->
         <div id="chat-header" class="p-4 border-b border-slate-700 flex justify-between items-center bg-transparent rounded-t-2xl cursor-move">
@@ -127,7 +122,7 @@
             }
         });
 
-        function addMessage(message, sender) {
+function addMessage(message, sender) {
             const messageWrapper = document.createElement('div');
             messageWrapper.className = `flex items-start gap-3 ${sender === 'user' ? 'justify-end' : ''}`;
             
@@ -144,12 +139,16 @@
                         <i data-lucide="user" class="w-5 h-5"></i>
                     </div>`;
             } else {
+                
+                let formattedMessage = message.replace(/\n/g, '<br>');
+                formattedMessage = formattedMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
                 messageHTML = `
                     <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-full flex items-center justify-center flex-shrink-0 p-1">
                         <img src="${assistantAvatarUrl}" alt="AI Avatar" class="rounded-full">
                     </div>
                     <div class="bg-slate-800 p-4 rounded-lg rounded-tl-none max-w-lg shadow-md">
-                        <p class="text-slate-200">${message}</p>
+                        <p class="text-slate-200">${formattedMessage}</p>
                         <p class="text-xs text-slate-500 mt-2 text-right">${time}</p>
                     </div>`;
             }
@@ -238,7 +237,10 @@
             chatWindow.style.left = x > 0 ? `${x}px` : '0px';
         }
 
-        window.addEventListener('load', centerWindow);
+        window.addEventListener('load', () => {
+            centerWindow();            
+            chatWindow.style.backgroundColor = 'rgba(2, 6, 23, 0.5)';
+        });
         window.addEventListener('resize', centerWindow);
 
         chatHeader.addEventListener('mousedown', (e) => {
