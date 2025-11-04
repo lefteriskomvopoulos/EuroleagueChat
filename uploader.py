@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 import json
 import pandas as pd
-import scrapper
+import retriever
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -59,11 +59,11 @@ if __name__ == "__main__":
         print(f"Everything deleted")
         exit(0)
 
-    teams = scrapper.teams
-    players = scrapper.players
-    playersToTeams = scrapper.playersToTeams
-    stats = scrapper.stats
-    playersToStats = scrapper.playersToStats
+    teams = retriever.teams
+    players = retriever.players
+    playersToTeams = retriever.playersToTeams
+    stats = retriever.stats
+    playersToStats = retriever.playersToStats
 
     result = upload_nodes(graph, teams, "Team")
     print(f"Teams created: {result[0]['nodes_created']}")
